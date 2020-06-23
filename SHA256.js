@@ -53,19 +53,96 @@ class Encryption {
         for(let i = 0; i < N; i++){
             /** Message schedule */
             const S = new Array(64);
+
+            // STEP 1 -- Initialize message schedule
+
+            // Set first N elements of S to the first N elements of M[i]
+            for (let j = 0; j < N; j++){
+                S[j] = M[i][t];
+            }
+
+            // Set the rest of the elements to some random shit TODO unpack the random shit
+            for(let j = 16; j < 64; j++){
+                S[j] = (Encryption.SigmaD(S[j-2]) + S[j-7] + Encryption.SigmaC(S[j-15]) + S[j-16]) >>> 0;
+            }
+
+            // STEP 2 -- Initialize working variables a,...,h with previous hash values
+            let a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+
+            // STEP 3 -- Main loop
+            for (let j = 0; j < 64; j++){
+                /** Working variable */
+                const T1 = h + Encryption.SigmaB(e) + Encryption.Choice(e, f, g) + K[j] + S[j];
+                /** Working variable */
+                const T2 = Encryption.SigmaB(a) + Encryption.Majority(a, b, c);
+
+                //delete h, shift every letter up one, and then set a = T1+T2 mod 2^32
+                h=g;
+                g=f;
+                f=e;
+                e=d;
+                d=c;
+                c=b;
+                b=a;
+                a = (T1 + T2) >>> 0;
+            }
+
+            // STEP 4 -- Compute the new intermediate hash values
+            H[0] = (H[0] + a) >>> 0;
+            H[1] = (H[1] + b) >>> 0;
+            H[2] = (H[2] + c) >>> 0;
+            H[3] = (H[3] + d) >>> 0;
+            H[4] = (H[4] + e) >>> 0;
+            H[5] = (H[5] + f) >>> 0;
+            H[6] = (H[6] + g) >>> 0;
+            H[7] = (H[7] + h) >>> 0;
         }
+
+        // Convert H[0],...,H[7] to hex strings (with leading zeros)
+        for(let j = 0; j < H.length; j++){
+            //Convert H[j] to string, prepend 8 0s and then retrieve the string 
+            ('00000000' + H[j].toString()).slice(-8);
+        }
+
+        //Return H as the encrypted hash
+        return H;
     } 
+
 
     /**
      * 
-     * @param {Int32Array} x
-     * @param {Int32Array} y 
+     * Shifts the first argument @var x to the right by @var y bits replacing with 0s, then adds y into the left part of the bit array
+     * 
+     * @param {Int32Array} x - the value to rotate
+     * @param {Int32Array} y - the number of positions to rotate, between 0 and 32
+     * 
+     * @example 127 = RotateRight(00000000000000000000000001111111, 4) -> 11110000000000000000000000000111
      */
     static RotateRight(x, y){
-        
+        return ( (x >>> y) | (x << (32-y)) );
     }
 
-    
+    //Sigma Functions
+    static SigmaA(x){
+        return ( Encryption.RotateRight(x, 2) ^ Encryption.RotateRight(x, 13) ^ Encryption.RotateRight(x, 22) );
+    }
+    static SigmaB(x){
+        return ( Encryption.RotateRight(x, 6) ^ Encryption.RotateRight(x, 11) ^ Encryption.RotateRight(x, 25) );
+    }
+    static SigmaC(x){
+        return ( Encryption.RotateRight(x, 7) ^ Encryption.RotateRight(x, 18) ^ (x >>> 3) );
+    }
+    static SigmaD(x){
+        return ( Encryption.RotateRight(x, 17) ^ Encryption.RotateRight(x, 19) ^ (x >>> 10) );
+    }
+
+    //TODO Figure out the fuck these are supposed to be
+    static Choice(x, y, z){
+        return (x & y) ^ (-x & z);
+    }
+    static Majority(x, y, z){
+        return (x & y) ^ (x & z) ^ (y & z);
+    }
 }
 
 export default Encryption;
