@@ -1,4 +1,4 @@
-class Encryption {
+class SHA {
     
     /**
      * 
@@ -63,7 +63,7 @@ class Encryption {
 
             // Set the rest of the elements to some random shit TODO unpack the random shit
             for(let j = 16; j < 64; j++){
-                S[j] = (Encryption.SigmaD(S[j-2]) + S[j-7] + Encryption.SigmaC(S[j-15]) + S[j-16]) >>> 0;
+                S[j] = (SHA.SigmaD(S[j-2]) + S[j-7] + SHA.SigmaC(S[j-15]) + S[j-16]) >>> 0;
             }
 
             // STEP 2 -- Initialize working variables a,...,h with previous hash values
@@ -72,9 +72,9 @@ class Encryption {
             // STEP 3 -- Main loop
             for (let j = 0; j < 64; j++){
                 /** Working variable */
-                const T1 = h + Encryption.SigmaB(e) + Encryption.Choice(e, f, g) + K[j] + S[j];
+                const T1 = h + SHA.SigmaB(e) + SHA.Choice(e, f, g) + K[j] + S[j];
                 /** Working variable */
-                const T2 = Encryption.SigmaB(a) + Encryption.Majority(a, b, c);
+                const T2 = SHA.SigmaB(a) + SHA.Majority(a, b, c);
 
                 //delete h, shift every letter up one, and then set a = T1+T2 mod 2^32
                 h=g;
@@ -124,16 +124,16 @@ class Encryption {
 
     //Sigma Functions
     static SigmaA(x){
-        return ( Encryption.RotateRight(x, 2) ^ Encryption.RotateRight(x, 13) ^ Encryption.RotateRight(x, 22) );
+        return ( SHA.RotateRight(x, 2) ^ SHA.RotateRight(x, 13) ^ SHA.RotateRight(x, 22) );
     }
     static SigmaB(x){
-        return ( Encryption.RotateRight(x, 6) ^ Encryption.RotateRight(x, 11) ^ Encryption.RotateRight(x, 25) );
+        return ( SHA.RotateRight(x, 6) ^ SHA.RotateRight(x, 11) ^ SHA.RotateRight(x, 25) );
     }
     static SigmaC(x){
-        return ( Encryption.RotateRight(x, 7) ^ Encryption.RotateRight(x, 18) ^ (x >>> 3) );
+        return ( SHA.RotateRight(x, 7) ^ SHA.RotateRight(x, 18) ^ (x >>> 3) );
     }
     static SigmaD(x){
-        return ( Encryption.RotateRight(x, 17) ^ Encryption.RotateRight(x, 19) ^ (x >>> 10) );
+        return ( SHA.RotateRight(x, 17) ^ SHA.RotateRight(x, 19) ^ (x >>> 10) );
     }
 
     //TODO Figure out the fuck these are supposed to be
@@ -145,4 +145,4 @@ class Encryption {
     }
 }
 
-export default Encryption;
+export default SHA;
