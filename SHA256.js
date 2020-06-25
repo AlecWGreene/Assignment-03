@@ -7,7 +7,7 @@ class SHA {
      * @param {string} msg - a string in unicode to be hashed 
      * 
      */
-    static process(msg){
+    static hash(msg){
 
         const K = [];
 
