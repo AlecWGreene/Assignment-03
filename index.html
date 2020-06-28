@@ -3,11 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Assignment 3: Password Generator</title>
+    <!-- Link Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+    <div class="container">
+        <div class="generator-container">
+            <div class="row">
+                <h1 class="mx-auto">Password Generator</h1>
+            </div>
+
+            <div class="row justify-content-center my-2">
+                <input type="range" min="1" max="100" value="50" class="slider w-50" id="charRange">
+            </div>
+
+            <form>
+                <div class="row justify-content-center ml-2">
+                    <div class="column mx-2 d-flex flex-column justify-content-center">
+                        <input type="checkbox" id="lowercaseCheck">
+                        <div> Lowercase Letters </div>
+                    </div>
+
+                    <div class="column mx-2 d-flex flex-column justify-content-center">
+                        <input type="checkbox" id="capitalCheck">
+                        <div> Capital Letters </div>
+                    </div>
+
+                    <div class="column mx-2 d-flex flex-column justify-content-center">
+                        <input type="checkbox" id="numberCheck">
+                        <div> Numbers </div>
+                    </div>
+
+                    <div class="column mx-2 d-flex flex-column justify-content-center">
+                        <input type="checkbox" id="specialCharCheck">
+                        <div> Special Characters </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <input type="text" class="mx-auto" id="outputField">
+                </div>
+                <div class="row">
+                    <button type="button" class="button mx-auto" id="generateButton"> Generate </button>
+                </div>
+            </form>
+            </form>
+        </div>
+    </div>
 </body>
 
 <script src="Encrypt.js"></script>
+<script src="script.js"></script>
 </html>

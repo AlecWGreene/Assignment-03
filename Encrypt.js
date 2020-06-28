@@ -6,7 +6,7 @@ class RSA {
     // Use these to debug
     static Debug() { 
         RSA.isDebugging = true; 
-        RSA.Encrypt("Alec",13);
+        RSA.Encrypt("Alec Greene Wade",13);
         RSA.isDebugging = false;
     }   
 
@@ -16,14 +16,14 @@ class RSA {
      * 
      * Information: 
      * p = 2^17-1, q = 2^19-1, n = pq = 68718821377
-     * lambda(n) = lcm(p-1,q-1) = lcm(2^16, 2^18) = 2^18 = q - 1
+     * lambda(n) = lcm(p-1,q-1) = lcm(2^17-1, 2^19-1) = 2^18 = q - 1 TODO: Adjust math  
      * e = key
      * 
-     * @param {string} msg - the message to be encrypted
+     * @param {string} msg the message to be encrypted
      * 
-     * @param {int} key - the key to be used, an integer coprime to our private key
+     * @param {int} key the key to be used, an integer coprime to our private key
      * 
-     * @returns {}
+     * @returns {string} a string as an encrypted ciphertext
      * 
      */
     static Encrypt(msg, key){
@@ -40,6 +40,23 @@ class RSA {
 
         if(RSA.isDebugging){ console.log("l,b,m: ", l, b, m.length);} // console log l, b, m
 
+        if(RSA.isDebugging){
+            var debugM = new Array(b);
+
+            // Initialize
+            for(let i = 0; i < b; i++){
+            debugM[i] = new Array(16);
+            
+                // Initialize debugM[i]
+                for(let j = 0; j < 16; j++){
+                    // Assign m[i][j] the value of the unicodes for characters at positions 64i+4j,...,64i+4j+3 in msg
+                    debugM[i][j] = (msg.charCodeAt(64*i + 4*j + 0) << 24).toString(2) + "|" + (msg.charCodeAt(64*i + 4*j + 1) << 16).toString(2) + "|" + (msg.charCodeAt(64*i + 4*j + 2) << 8).toString(2) + "|" + (msg.charCodeAt(64*i + 4*j + 3) << 0).toString(2);
+                    console.log(debugM[i][j]);
+                }
+        }
+
+        }
+
         // Initialize m[]
         for(let i = 0; i < b; i++){
             m[i] = new Array(16);
@@ -50,6 +67,7 @@ class RSA {
                 m[i][j] = ( msg.charCodeAt(64*i + 4*j + 0) << 24| msg.charCodeAt(64*i + 4*j + 1) << 16 | msg.charCodeAt(64*i + 4*j + 2) << 8 | msg.charCodeAt(64*i + 4*j + 3) << 0)
             }
         }
+
 
         /** The RSA modulus */
         var n = 68718821377;
@@ -64,7 +82,7 @@ class RSA {
                     // Set c[i] = m[i]^key (mod n)
                     c[i * 16 + j] = ModularExp(m[i][j], key, n);
 
-                    if(RSA.isDebugging){ console.log("m["+i+"]["+j+"]: ", m[i][j], "\n" + "c["+i+"]["+j+"]: ", c[i * 16 + j], "\n")} // console log m[i] and c[i]
+                    if(RSA.isDebugging){ console.log("m["+i+"]["+j+"]: ", m[i][j].toString(2), "\n" + "c["+i+"]["+j+"]: ", c[i * 16 + j].toString(2), "\n")} // console log m[i] and c[i]
                 }
             }
         }
@@ -92,7 +110,7 @@ class RSA {
             }
         }
 
-        console.log("Cipher: ", cipher, "\n Cipher Code: ", c.toString());
+        console.log("Cipher: ", cipher, "\nCipher Code: ", c.toString(2));
         return cipher;
     }
 }
