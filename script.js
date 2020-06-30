@@ -14,6 +14,8 @@ var numberCheck = document.getElementById("numberCheck");
 var specialCheck = document.getElementById("specialCharCheck");
 /** The input slider representing the number of characters to use */
 var numberSlider = document.getElementById("charRange");
+/** The text used to display the length of the password */
+var lengthText = document.getElementById("lengthText");
 
 
 
@@ -42,6 +44,8 @@ var passwordOptions = [1, 1, 1, 1];
  * Using the binary array of options passed to it, constructs a password by string together the character strings and selecting random characters form it
  * 
  * @param {array} a_options the options for how to generate the password, 1 for include 0 for exclude
+ * 
+ * @returns {string} A string of randomly generated characters
  */
 function GeneratePassword(a_options){
 
@@ -86,6 +90,7 @@ function GeneratePassword(a_options){
  * 
  * @param {Event} event the event which triggered the call
  * 
+ * @returns {void}
  */
 function HandleClick(event){
     event.preventDefault();
@@ -125,22 +130,34 @@ function HandleClick(event){
 }
 
 /**
- * Updates charLength when the slider is changes
+ * Updates the length text element using the current value of the slider
  * 
- * @param {Event} event the event call for the slider
+ * @param {Event} event the event calling the method, preferably input
+ * 
+ * @return {void}
  */
-function HandleSlider(event){
+function HandleMoveSlider(event){
     event.preventDefault();
 
-    console.log("yo");
-
     charLength = numberSlider.value;
+    DisplayLength();
+}
+
+/**
+ * Displays the current length in the prepend part of the input field
+ * 
+ * @returns {void}
+ */
+function DisplayLength(){
+    lengthText.textContent = "Length: " + charLength;
 }
 
 /**
  * Toggles a setting for GeneratePassword, to be called when a checkbox is clicked
  *
  * @param {int} a_index the generation setting to change 
+ * 
+ * @returns {void}
  */
 function ToggleOption(a_index){
     passwordOptions[a_index] = 1 - passwordOptions[a_index];
@@ -151,6 +168,8 @@ function ToggleOption(a_index){
  * Updates the length for GeneratePassword, to be called when the slider is updated
  * 
  * @param {int} a_length a positive integer representing the desired length of the password
+ * 
+ * @returns {void}
  */
 function UpdateLength(a_length){
     if(a_length <= 0){
@@ -168,11 +187,12 @@ function UpdateLength(a_length){
 //#region
 
 // Add event listeners
-numberSlider.addEventListener("change", HandleSlider);
+//numberSlider.addEventListener("change", HandleSlider);
+numberSlider.addEventListener("input", HandleMoveSlider);
 generateButton.addEventListener("click", HandleClick);
 lowercaseCheck.addEventListener("change",HandleClick);
 capitalCheck.addEventListener("change", HandleClick);
-numberCheck.addEventListener("change",HandleClick);
-specialCheck.addEventListener("change",HandleClick);
+numberCheck.addEventListener("change", HandleClick);
+specialCheck.addEventListener("change", HandleClick);
 
 //#endregion 
