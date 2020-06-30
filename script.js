@@ -30,9 +30,9 @@ var specialChars = "\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\]\^\_\`\{\|\}
 /** An array to allow us to iterate through character arrays */
 var passwordArray = [lowerChars, upperChars, numberChars, specialChars];
 /** The length of the password to generator */
-var charLength = 1;
+var charLength = numberSlider.value;
 /** The array indicating the conditions for password generation, correlating to index in password array */
-var passwordOptions = [0, 0, 0, 0];
+var passwordOptions = [1, 1, 1, 1];
 
 
 
@@ -44,6 +44,7 @@ var passwordOptions = [0, 0, 0, 0];
  * @param {array} a_options the options for how to generate the password, 1 for include 0 for exclude
  */
 function GeneratePassword(a_options){
+
     // Control for improper conditions
     if(a_options.length != 4){
         console.log("An incorrect number of " + a_options.length + " options was passed to GeneratePassword");
@@ -75,6 +76,7 @@ function GeneratePassword(a_options){
         var t_index = Math.ceil(Math.random() * validChars.length) - 1;
         t_string += validChars.charAt(t_index);
     }
+    console.log(t_string);
 
     return t_string;    
 }
@@ -87,37 +89,37 @@ function GeneratePassword(a_options){
  */
 function HandleClick(event){
     event.preventDefault();
-    console.log("hi!");
+
     /** The element that trigged the call */
     var t_element = event.target;
 
     if(t_element.matches("button")){ // If the element is a button generate a password
-        outputField.textContent = GeneratePassword(passwordOptions);
+        outputField.value = GeneratePassword(passwordOptions);
     }
     else if(t_element.matches("input") && t_element.type === "checkbox"){ // If the element is a checkbox toggle the appropriate value
         var t_index = 5;
-        console.log("hi!");
+
         // I am a sloppy coder :(
         for(let i = 0; i < 4; i++){
-            if(t_element.textContent === "Lowercase Letters"){
+            if(t_element === lowercaseCheck){
                 t_index = 0;
                 break;
             }
-            else if(t_element.textContent === "Capital Letters"){
+            else if(t_element === capitalCheck){
                 t_index = 1;
                 break;
             }
-            else if(t_element.textContent === "Numbers"){
+            else if(t_element === numberCheck){
                 t_index = 2;
                 break;
             }
-            else if(t_element.textContent === "Special Characters"){
+            else if(t_element === specialCheck){
                 t_index = 3;
                 break;
             }
         }
 
-        //Toggle the option
+        // Toggle the option
         ToggleOption(t_index);
     }
 }
@@ -129,6 +131,9 @@ function HandleClick(event){
  */
 function HandleSlider(event){
     event.preventDefault();
+
+    console.log("yo");
+
     charLength = numberSlider.value;
 }
 
@@ -163,11 +168,11 @@ function UpdateLength(a_length){
 //#region
 
 // Add event listeners
-numberSlider.addEventListener("onchange", HandleSlider);
-generateButton.addEventListener("onclick", HandleClick);
-lowercaseCheck.addEventListener("onclick",HandleClick);
-capitalCheck.addEventListener("onclick", HandleClick);
-numberCheck.addEventListener("onclick",HandleClick);
-specialCheck.addEventListener("onclick",HandleClick);
+numberSlider.addEventListener("change", HandleSlider);
+generateButton.addEventListener("click", HandleClick);
+lowercaseCheck.addEventListener("change",HandleClick);
+capitalCheck.addEventListener("change", HandleClick);
+numberCheck.addEventListener("change",HandleClick);
+specialCheck.addEventListener("change",HandleClick);
 
 //#endregion 
